@@ -6,6 +6,6 @@ depend: []
 softdepend: []
 loadbefore: []
 commands:
-  lrep:
+  lrepair:
     description: "The main command for the plugin"
-    aliases: [lrepair, lrep]
+    aliases: [lr, lrep]

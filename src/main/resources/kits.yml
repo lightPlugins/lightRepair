@@ -1,7 +1,7 @@
 repairKits:
-  '1':
+  'repair_kit_1':
     addDurability: 100
-    material: DIAMOND
+    material: 'vanilla:DIAMOND'
     glow: true
     displayName: "Repair Kit I"
     lore:

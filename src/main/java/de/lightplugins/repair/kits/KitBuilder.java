@@ -4,32 +4,35 @@ import com.willfp.eco.core.items.Items;
 import de.lightplugins.repair.enums.PersistentDataPaths;
 import de.lightplugins.repair.master.Main;
 import dev.lone.itemsadder.api.CustomStack;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.logging.Level;
 
 public class KitBuilder {
 
-    public final List<ItemStack> repairKits = new ArrayList<>();
+    public final Map<String, ItemStack> repairKits = new HashMap<>();
+    public final List<String> kitNames = new ArrayList<>();
 
 
-    public List<ItemStack> getAllKits() {
+    public Map<String, ItemStack> getAllKits() {
         return repairKits;
     }
 
     public void reloadKits() {
         repairKits.clear();
-        createSingleKit();
+        updateAllKits();
+        updateKitNames();
     }
 
     public void updateItemStack(NamespacedKey key, ItemMeta itemMeta) {
@@ -45,20 +48,43 @@ public class KitBuilder {
         }
     }
 
-    private void createSingleKit() {
+    public List<String> getKitNames() {
+        updateKitNames();
+        return kitNames;
+    }
+
+    public ItemStack getKitByName(String name) {
+
+        for(String key : getAllKits().keySet()) {
+            if(key.equalsIgnoreCase(name)) {
+                return getAllKits().get(key);
+            }
+        }
+
+        return new ItemStack(Material.STONE, 1);
+    }
+
+    private void updateKitNames() {
+        FileConfiguration kits = Main.kits.getConfig();
+        kitNames.clear();
+        kitNames.addAll(Objects.requireNonNull(kits.getConfigurationSection("repairKits")).getKeys(false));
+    }
+
+    private void updateAllKits() {
 
         FileConfiguration kits = Main.kits.getConfig();
 
         for(String kitPath : Objects.requireNonNull(kits.getConfigurationSection("repairKits")).getKeys(false)) {
 
-            ItemStack itemStack = new ItemStack(Material.STONE, 1);
+            ItemStack itemStack = new ItemStack(Material.STONE);
+            Bukkit.getLogger().log(Level.SEVERE, "SIZE1: " + itemStack.getAmount());
             ItemMeta itemMeta = itemStack.getItemMeta();
 
             if(itemMeta == null) {
                 return;
             }
 
-            String material = kits.getString("repairKits." + kitPath + "material");
+            String material = kits.getString("repairKits." + kitPath + ".material");
 
             if(material == null) {
                 return;
@@ -70,39 +96,41 @@ public class KitBuilder {
                 return;
             }
 
+            Bukkit.getLogger().log(Level.INFO, "Key: " + matParams[0]);
+
             switch (matParams[0]) {
-
-                case "vanilla":
+                case "vanilla" -> {
+                    Bukkit.getLogger().log(Level.INFO, "Material: " + matParams[1]);
                     itemStack.setType(Material.valueOf(matParams[1]));
-                    break;
-
-                case "itemsadder":
+                }
+                case "itemsadder" -> {
+                    Bukkit.getLogger().log(Level.INFO, "Material: " + matParams[1]);
                     itemStack = CustomStack.getInstance(matParams[1]).getItemStack();
-                    break;
-
-                case "ecoitems":
+                }
+                case "ecoitems" -> {
+                    Bukkit.getLogger().log(Level.INFO, "Material: " + matParams[1]);
                     itemStack = Items.lookup("ecoitems:" + matParams[1]).getItem();
-                    break;
+                }
             }
 
             String displayName = Main.colorTranslation.hexTranslation(
-                    kits.getString("repairKits." + kitPath + "displayName"));
+                    kits.getString("repairKits." + kitPath + ".displayName"));
 
             itemMeta.setDisplayName(displayName);
             if(itemMeta.getLore() != null) {
                 itemMeta.getLore().clear();
             }
 
-            int durability = kits.getInt("repairKits." + kitPath + "addDurability");
+            int durability = kits.getInt("repairKits." + kitPath + ".addDurability");
 
             List<String> lore = new ArrayList<>();
-            for(String line : kits.getStringList("repairKits." + kitPath + "lore")) {
+            for(String line : kits.getStringList("repairKits." + kitPath + ".lore")) {
                 lore.add(Main.colorTranslation.hexTranslation(line
                         .replace("#durability#", String.valueOf(durability))));
             }
             itemMeta.setLore(lore);
 
-            boolean glow = kits.getBoolean("repairKits." + kitPath + "glow");
+            boolean glow = kits.getBoolean("repairKits." + kitPath + ".glow");
             if(glow) {
                 itemMeta.addEnchant(Enchantment.DURABILITY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -117,7 +145,8 @@ public class KitBuilder {
             }
 
             itemStack.setItemMeta(itemMeta);
-            repairKits.add(itemStack);
+            Bukkit.getLogger().log(Level.SEVERE, "SIZE2: " + itemStack.getAmount());
+            repairKits.put(kitPath, itemStack);
 
         }
     }

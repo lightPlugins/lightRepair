@@ -6,21 +6,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 
 public class CheckItemStack implements Listener {
 
     @EventHandler
-    public void onItemUpdate(InventoryOpenEvent event) {
-
-        Bukkit.getLogger().log(Level.INFO, "Triggered InventoryOpenEvent");
+    public void onItemUpdate(InventoryClickEvent event) {
 
         for (ItemStack itemStack : event.getInventory().getContents()) {
 
@@ -31,9 +31,12 @@ public class CheckItemStack implements Listener {
                 return;
             }
 
-            for(ItemStack singleKit : Main.kitBuilder.getAllKits() ) {
-                singleKit.setAmount(itemAmount);
-                if(singleKit.equals(itemStack)) {
+            for(String kitName : Main.kitBuilder.getAllKits().keySet()) {
+
+                ItemStack is = Main.kitBuilder.getAllKits().get(kitName);
+
+                is.setAmount(itemAmount);
+                if(is.equals(itemStack)) {
                     Bukkit.getLogger().log(Level.INFO, "invStack and listStack are equal");
                     return;
                 }
@@ -41,7 +44,7 @@ public class CheckItemStack implements Listener {
                 PersistentDataContainer invData = itemMeta.getPersistentDataContainer();
                 NamespacedKey invKey = new NamespacedKey(Main.getInstance, PersistentDataPaths.DURABILITY_VALUE.getType());
 
-                ItemMeta itemMetaList = singleKit.getItemMeta();
+                ItemMeta itemMetaList = is.getItemMeta();
 
                 if(itemMetaList == null) {
                     Bukkit.getLogger().log(Level.INFO, "itemMetaList is null");
@@ -65,7 +68,7 @@ public class CheckItemStack implements Listener {
 
                 if(Objects.equals(invAmount, listAmount)) {
                     Bukkit.getLogger().log(Level.INFO, "durability value is equal. Update current item ...");
-                    itemStack = singleKit;
+                    itemStack = is;
                 }
             }
         }

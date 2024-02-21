@@ -1,5 +1,7 @@
 package de.lightplugins.repair.master;
 
+import de.lightplugins.repair.commands.manager.MainCommandManager;
+import de.lightplugins.repair.commands.tabs.MainTabCompleter;
 import de.lightplugins.repair.inv.CheckItemStack;
 import de.lightplugins.repair.inv.CheckOnRepair;
 import de.lightplugins.repair.kits.KitBuilder;
@@ -9,6 +11,8 @@ import de.lightplugins.repair.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
 
 public class Main extends JavaPlugin {
 
@@ -37,12 +41,16 @@ public class Main extends JavaPlugin {
         PluginManager pm = Bukkit.getPluginManager();
 
         pm.registerEvents(new CheckOnRepair(), this);
-        pm.registerEvents(new CheckItemStack(), this);
+        //pm.registerEvents(new CheckItemStack(), this);
 
         util = new Util();
         colorTranslation = new ColorTranslation();
 
         kitBuilder = new KitBuilder();
+        kitBuilder.reloadKits();
+
+        Objects.requireNonNull(this.getCommand("lrepair")).setExecutor(new MainCommandManager(this));
+        Objects.requireNonNull(this.getCommand("lrepair")).setTabCompleter(new MainTabCompleter());
 
     }
 
