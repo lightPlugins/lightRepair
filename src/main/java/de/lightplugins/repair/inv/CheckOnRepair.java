@@ -82,16 +82,6 @@ public class CheckOnRepair implements Listener {
                                     event.setCancelled(true);
                                     return;
                                 }
-
-                                Advancement advancement = Bukkit.getServer().get
-
-                                AdvancementProgress progress = player.getAdvancementProgress(Ad);
-                                for (String criteria : advancement.getCriteria()) {
-                                    if (!progress.isDone(criteria)) {
-                                        // Hier deaktivierst du die Toast-Popups für das Kriterium
-                                        progress.getCriterion(criteria).setDisplayToast(false);
-                                    }
-                                }
                             }
                         }
                     }
@@ -99,5 +89,4 @@ public class CheckOnRepair implements Listener {
             }
         }
     }
-
 }
