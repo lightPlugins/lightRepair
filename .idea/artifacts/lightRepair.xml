@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="lightRepair">
+    <output-path>$USER_HOME$/Desktop/minecraft-server/plugins</output-path>
+    <root id="archive" name="lightRepair.jar">
+      <element id="module-output" name="lightRepair" />
+    </root>
+  </artifact>
+</component>

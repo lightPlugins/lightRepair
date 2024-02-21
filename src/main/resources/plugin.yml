@@ -1,0 +1,11 @@
+name: lightRepair
+version: 1.0-SNAPSHOT
+main: de.lightplugins.repair.master.Main
+api-version: 1.18
+depend: []
+softdepend: []
+loadbefore: []
+commands:
+  lrep:
+    description: "The main command for the plugin"
+    aliases: [lrepair, lrep]

@@ -1,0 +1,9 @@
+repairKits:
+  '1':
+    addDurability: 100
+    material: DIAMOND
+    glow: true
+    displayName: "Repair Kit I"
+    lore:
+      - 'Repair any tool'
+      - 'Durability: #durability#'
