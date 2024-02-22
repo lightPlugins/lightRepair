@@ -31,8 +31,8 @@ public class ReloadCommand extends SubCommand {
         }
 
         Main.kits.reloadConfig("kits.yml");
-        Main.kits.reloadConfig("settings.yml");
-        Main.kits.reloadConfig("messages.yml");
+        Main.settings.reloadConfig("settings.yml");
+        Main.messages.reloadConfig("messages.yml");
         Main.kitBuilder.reloadKits();
         Main.util.sendMessage(player, MessagePath.Reload.getPath());
         Main.util.playSoundOnSuccess(player);

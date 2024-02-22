@@ -3,7 +3,7 @@ version: 1.0-SNAPSHOT
 main: de.lightplugins.repair.master.Main
 api-version: 1.18
 depend: []
-softdepend: [ItemsAdder]
+softdepend: [ItemsAdder, EcoItems]
 loadbefore: []
 commands:
   lrepair:

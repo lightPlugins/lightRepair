@@ -52,6 +52,11 @@ public class KitBuilder {
         return kitNames;
     }
 
+    public String getDisplayName(String kitName) {
+        FileConfiguration kits = Main.kits.getConfig();
+        return Main.colorTranslation.hexTranslation(kits.getString("repairKits." + kitName + ".displayName"));
+    }
+
     public ItemStack getKitByName(String name) {
 
         for(String key : getAllKits().keySet()) {
@@ -76,11 +81,6 @@ public class KitBuilder {
         for(String kitPath : Objects.requireNonNull(kits.getConfigurationSection("repairKits")).getKeys(false)) {
 
             ItemStack itemStack = new ItemStack(Material.STONE);
-            ItemMeta itemMeta = itemStack.getItemMeta();
-
-            if(itemMeta == null) {
-                return;
-            }
 
             String material = kits.getString("repairKits." + kitPath + ".material");
 
@@ -110,6 +110,12 @@ public class KitBuilder {
             String displayName = Main.colorTranslation.hexTranslation(
                     kits.getString("repairKits." + kitPath + ".displayName"));
 
+            ItemMeta itemMeta = itemStack.getItemMeta();
+
+            if(itemMeta == null) {
+                return;
+            }
+
             itemMeta.setDisplayName(displayName);
             if(itemMeta.getLore() != null) {
                 itemMeta.getLore().clear();
@@ -133,13 +139,15 @@ public class KitBuilder {
             PersistentDataContainer data = itemMeta.getPersistentDataContainer();
             NamespacedKey namespaceKeyValue = new NamespacedKey(
                     Main.getInstance, PersistentDataPaths.DURABILITY_VALUE.getType());
+            NamespacedKey namespaceKeyValue1 = new NamespacedKey(
+                    Main.getInstance, PersistentDataPaths.KIT_ID.getType());
 
             if(namespaceKeyValue.getKey().equalsIgnoreCase(PersistentDataPaths.DURABILITY_VALUE.getType())) {
                 data.set(namespaceKeyValue, PersistentDataType.INTEGER, durability);
+                data.set(namespaceKeyValue1, PersistentDataType.STRING, kitPath);
             }
 
             itemStack.setItemMeta(itemMeta);
-            Bukkit.getLogger().log(Level.SEVERE, "SIZE2: " + itemStack.getAmount());
             repairKits.put(kitPath, itemStack);
 
         }

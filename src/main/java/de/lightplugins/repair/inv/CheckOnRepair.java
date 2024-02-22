@@ -88,6 +88,7 @@ public class CheckOnRepair implements Listener {
                                                 material.toString().endsWith("_LEGGINGS") ||
                                                 material.toString().endsWith("_BOOTS") ||
                                                 material.toString().equals("ELYTRA") ||
+                                                material.toString().equals("FISHING_ROD") ||
                                                 material.toString().equals("SHIELD");
                                     })
                                     .toList();
@@ -117,7 +118,7 @@ public class CheckOnRepair implements Listener {
                                         }
 
                                         Main.util.sendMessage(player, MessagePath.OnSuccessRepair.getPath()
-                                                .replace("#kit#", kitNames));
+                                                .replace("#kit#", Main.kitBuilder.getDisplayName(kitNames)));
                                         Main.util.playSoundOnRepair(player);
 
                                         if (event.getCursor().getAmount() == 1) {

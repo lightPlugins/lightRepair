@@ -63,7 +63,7 @@ public class GetKitCommand extends SubCommand {
 
         if(Main.util.isInventoryEmpty(player)) {
             Main.util.sendMessage(player, MessagePath.GetKitSuccess.getPath()
-                    .replace("#kit#", kitName));
+                    .replace("#kit#", Main.kitBuilder.getDisplayName(kitName)));
             player.getInventory().addItem(is);
             Main.util.playSoundOnSuccess(player);
             return false;
@@ -74,7 +74,8 @@ public class GetKitCommand extends SubCommand {
         }
 
         player.getLocation().getWorld().dropItemNaturally(player.getLocation(), is);
-        Main.util.sendMessage(player, MessagePath.GetKitInvFull.getPath());
+        Main.util.sendMessage(player, MessagePath.GetKitInvFull.getPath()
+                .replace("#kit#", Main.kitBuilder.getDisplayName(kitName)));
         Main.util.playSoundOnSuccess(player);
 
         return false;

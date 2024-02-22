@@ -3,6 +3,7 @@ package de.lightplugins.repair.inv;
 import de.lightplugins.repair.enums.PersistentDataPaths;
 import de.lightplugins.repair.master.Main;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +25,10 @@ public class CheckItemStack implements Listener {
     public void onItemUpdate(InventoryClickEvent event) {
 
         if(event.getClickedInventory() == null) {
+            return;
+        }
+
+        if(event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE)) {
             return;
         }
 
