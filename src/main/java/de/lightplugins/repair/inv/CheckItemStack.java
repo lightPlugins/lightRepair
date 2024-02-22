@@ -4,6 +4,7 @@ import de.lightplugins.repair.enums.PersistentDataPaths;
 import de.lightplugins.repair.master.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -22,54 +23,60 @@ public class CheckItemStack implements Listener {
     @EventHandler
     public void onItemUpdate(InventoryClickEvent event) {
 
-        for (ItemStack itemStack : event.getInventory().getContents()) {
+        if(event.getClickedInventory() == null) {
+            return;
+        }
 
-            int itemAmount = itemStack.getAmount();
+        ItemStack itemStack = event.getCurrentItem();
 
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            if(itemMeta == null) {
-                return;
+        if(itemStack == null) {
+            return;
+        }
+
+        int itemAmount = itemStack.getAmount();
+
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if(itemMeta == null) {
+            return;
+        }
+
+        for(String kitName : Main.kitBuilder.getAllKits().keySet()) {
+
+            ItemStack is = Main.kitBuilder.getKitByName(kitName).clone();
+
+            is.setAmount(itemAmount);
+            if(is.equals(itemStack)) {
+                continue;
             }
 
-            for(String kitName : Main.kitBuilder.getAllKits().keySet()) {
+            PersistentDataContainer invData = itemMeta.getPersistentDataContainer();
+            NamespacedKey invKey = new NamespacedKey(Main.getInstance, PersistentDataPaths.DURABILITY_VALUE.getType());
 
-                ItemStack is = Main.kitBuilder.getAllKits().get(kitName);
+            ItemMeta itemMetaList = is.getItemMeta();
 
-                is.setAmount(itemAmount);
-                if(is.equals(itemStack)) {
-                    Bukkit.getLogger().log(Level.INFO, "invStack and listStack are equal");
-                    return;
-                }
+            if(itemMetaList == null) {
+                continue;
+            }
 
-                PersistentDataContainer invData = itemMeta.getPersistentDataContainer();
-                NamespacedKey invKey = new NamespacedKey(Main.getInstance, PersistentDataPaths.DURABILITY_VALUE.getType());
+            PersistentDataContainer listData = itemMetaList.getPersistentDataContainer();
+            NamespacedKey listKey = new NamespacedKey(Main.getInstance, PersistentDataPaths.DURABILITY_VALUE.getType());
+            if(!invKey.getKey().equalsIgnoreCase(PersistentDataPaths.DURABILITY_VALUE.getType())) {
+                continue;
+            }
 
-                ItemMeta itemMetaList = is.getItemMeta();
+            if(!invData.has(invKey, PersistentDataType.INTEGER)) {
+                continue;
+            }
 
-                if(itemMetaList == null) {
-                    Bukkit.getLogger().log(Level.INFO, "itemMetaList is null");
-                    return;
-                }
+            Integer invAmount = invData.get(invKey, PersistentDataType.INTEGER);
+            Integer listAmount = listData.get(listKey, PersistentDataType.INTEGER);
 
-                PersistentDataContainer listData = itemMetaList.getPersistentDataContainer();
-                NamespacedKey listKey = new NamespacedKey(Main.getInstance, PersistentDataPaths.DURABILITY_VALUE.getType());
-                if(!invKey.getKey().equalsIgnoreCase(PersistentDataPaths.DURABILITY_VALUE.getType())) {
-                    Bukkit.getLogger().log(Level.INFO, "invKey has no durability value");
-                    return;
-                }
+            if(Objects.equals(invAmount, listAmount)) {
+                event.setCancelled(true);
+                itemStack = is;
+                //update players current inventory
+                event.getClickedInventory().setItem(event.getSlot(), itemStack);
 
-                if(!invData.has(invKey, PersistentDataType.INTEGER)) {
-                    Bukkit.getLogger().log(Level.INFO, "invData has no durability key");
-                    return;
-                }
-
-                Integer invAmount = invData.get(invKey, PersistentDataType.INTEGER);
-                Integer listAmount = listData.get(listKey, PersistentDataType.INTEGER);
-
-                if(Objects.equals(invAmount, listAmount)) {
-                    Bukkit.getLogger().log(Level.INFO, "durability value is equal. Update current item ...");
-                    itemStack = is;
-                }
             }
         }
     }

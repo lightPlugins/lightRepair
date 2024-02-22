@@ -77,7 +77,6 @@ public class KitBuilder {
         for(String kitPath : Objects.requireNonNull(kits.getConfigurationSection("repairKits")).getKeys(false)) {
 
             ItemStack itemStack = new ItemStack(Material.STONE);
-            Bukkit.getLogger().log(Level.SEVERE, "SIZE1: " + itemStack.getAmount());
             ItemMeta itemMeta = itemStack.getItemMeta();
 
             if(itemMeta == null) {
@@ -96,19 +95,15 @@ public class KitBuilder {
                 return;
             }
 
-            Bukkit.getLogger().log(Level.INFO, "Key: " + matParams[0]);
 
             switch (matParams[0]) {
                 case "vanilla" -> {
-                    Bukkit.getLogger().log(Level.INFO, "Material: " + matParams[1]);
                     itemStack.setType(Material.valueOf(matParams[1]));
                 }
                 case "itemsadder" -> {
-                    Bukkit.getLogger().log(Level.INFO, "Material: " + matParams[1]);
                     itemStack = CustomStack.getInstance(matParams[1]).getItemStack();
                 }
                 case "ecoitems" -> {
-                    Bukkit.getLogger().log(Level.INFO, "Material: " + matParams[1]);
                     itemStack = Items.lookup("ecoitems:" + matParams[1]).getItem();
                 }
             }

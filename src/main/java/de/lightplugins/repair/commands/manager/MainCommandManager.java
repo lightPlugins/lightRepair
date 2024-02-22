@@ -1,6 +1,7 @@
 package de.lightplugins.repair.commands.manager;
 
 import de.lightplugins.repair.commands.main.GetKitCommand;
+import de.lightplugins.repair.commands.main.ReloadCommand;
 import de.lightplugins.repair.enums.MessagePath;
 import de.lightplugins.repair.master.Main;
 import de.lightplugins.repair.util.SubCommand;
@@ -27,6 +28,7 @@ public class MainCommandManager implements CommandExecutor {
     public MainCommandManager(Main plugin) {
         this.plugin = plugin;
         subCommands.add(new GetKitCommand());
+        subCommands.add(new ReloadCommand());
     }
 
     @Override
@@ -38,7 +40,7 @@ public class MainCommandManager implements CommandExecutor {
 
                         try {
                             if(getSubCommands().get(i).perform(player, args)) {
-                                Bukkit.getLogger().log(Level.WARNING, "SUCCESS");
+
                             }
                         } catch (ExecutionException | InterruptedException e) {
                             throw new RuntimeException("Something went wrong in executing /" + s + " " + Arrays.toString(args), e);

@@ -1,8 +1,10 @@
 package de.lightplugins.repair.inv;
 
+import de.lightplugins.repair.enums.MessagePath;
 import de.lightplugins.repair.enums.PersistentDataPaths;
 import de.lightplugins.repair.master.Main;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -23,20 +25,26 @@ import java.util.logging.Level;
 
 public class CheckOnRepair implements Listener {
 
+    /**
+     * This function handles the InventoryClickEvent and performs various operations based on the event's properties and the player's actions.
+     *
+     * @param  event  The InventoryClickEvent triggered by the player's interaction with an inventory.
+     */
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getClickedInventory() != null && event.getClickedInventory().getType() == InventoryType.PLAYER) {
             if (event.getCursor() != null && event.getCurrentItem() != null) {
+
+                if(event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE)) {
+                    return;
+                }
+
                 ItemStack sword = event.getCurrentItem().clone();
                 for(String kitNames : Main.kitBuilder.kitNames) {
 
                     ItemStack is = Main.kitBuilder.getKitByName(kitNames).clone();
 
                     is.setAmount(event.getCursor().getAmount());
-
-                    if(is == null) {
-                        return;
-                    }
 
                     if (event.getCursor().equals(is)) {
                         ItemMeta ism = is.getItemMeta();
@@ -63,9 +71,6 @@ public class CheckOnRepair implements Listener {
                             }
 
                             Player player = (Player) event.getWhoClicked();
-                            // Der Spieler zieht einen Diamanten auf ein Diamantschwert
-                             // Kopiere das Diamantschwert
-
 
                             List<ItemStack> items = Arrays.stream(Material.values())
                                     .map(ItemStack::new)
@@ -96,9 +101,9 @@ public class CheckOnRepair implements Listener {
                                     }
 
                                     if(swordMeta instanceof Damageable) {
-                                        // Erhöhe die Haltbarkeit des Diamantschwertes um die Haltbarkeit des Diamanten
+
                                         if(sword.getDurability() == 0) {
-                                            player.sendMessage("§cDas Item ist bereits komplett repariert!");
+                                            Main.util.sendMessage(player, MessagePath.AlreadyFullRepaired.getPath());
                                             event.setCancelled(true);
                                             return;
                                         }
@@ -109,17 +114,19 @@ public class CheckOnRepair implements Listener {
                                         } else {
                                             sword.setDurability((short) 0);
                                         }
-                                            // Entferne den Diamanten vom Inventar des Spielers
-                                            player.sendMessage("Durability wurde um " + durability + " erhöht.");
 
-                                            if (event.getCursor().getAmount() == 1) {
-                                                player.setItemOnCursor(null);
-                                            } else {
-                                                event.getCursor().setAmount(event.getCursor().getAmount() - 1);
-                                            }
-                                            event.setCurrentItem(sword); // Setze das modifizierte Diamantschwert zurück in den Slot
-                                            event.setCancelled(true);
-                                            return;
+                                        Main.util.sendMessage(player, MessagePath.OnSuccessRepair.getPath()
+                                                .replace("#kit#", kitNames));
+                                        Main.util.playSoundOnRepair(player);
+
+                                        if (event.getCursor().getAmount() == 1) {
+                                            player.setItemOnCursor(null);
+                                        } else {
+                                            event.getCursor().setAmount(event.getCursor().getAmount() - 1);
+                                        }
+                                        event.setCurrentItem(sword);
+                                        event.setCancelled(true);
+                                        return;
 
                                     }
                                 }

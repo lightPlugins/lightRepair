@@ -25,6 +25,7 @@ public class Main extends JavaPlugin {
     public static ColorTranslation colorTranslation;
     public static Util util;
     public static KitBuilder kitBuilder;
+
     public void onLoad() {
 
 
@@ -34,14 +35,14 @@ public class Main extends JavaPlugin {
     public void onEnable() {
 
         getInstance = this;
-        settings = new FileManager(this, "settings.yml");
-        messages = new FileManager(this, "messages.yml");
-        kits = new FileManager(this, "kits.yml");
+        settings = new FileManager(this, "settings.yml", true);
+        messages = new FileManager(this, "messages.yml", true);
+        kits = new FileManager(this, "kits.yml", false);
 
         PluginManager pm = Bukkit.getPluginManager();
 
         pm.registerEvents(new CheckOnRepair(), this);
-        //pm.registerEvents(new CheckItemStack(), this);
+        pm.registerEvents(new CheckItemStack(), this);
 
         util = new Util();
         colorTranslation = new ColorTranslation();

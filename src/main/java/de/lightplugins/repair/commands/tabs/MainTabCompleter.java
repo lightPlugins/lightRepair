@@ -25,6 +25,10 @@ public class MainTabCompleter implements TabCompleter {
                 arguments.add("get");
             }
 
+            if(player.hasPermission("lightrepair.admin.command.reload")) {
+                arguments.add("reload");
+            }
+
             return arguments;
         }
 

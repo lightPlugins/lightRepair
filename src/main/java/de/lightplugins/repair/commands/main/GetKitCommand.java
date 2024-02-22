@@ -1,5 +1,6 @@
 package de.lightplugins.repair.commands.main;
 
+import de.lightplugins.repair.enums.MessagePath;
 import de.lightplugins.repair.master.Main;
 import de.lightplugins.repair.util.SubCommand;
 import org.bukkit.Bukkit;
@@ -22,19 +23,20 @@ public class GetKitCommand extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "lrepair get <playername> <kitname>";
+        return "/lrepair get <playername> <kitname>";
     }
 
     @Override
     public boolean perform(Player player, String[] args) {
 
         if(args.length != 3) {
-            player.sendMessage("Please use /lrepair get <playername> <kitname>");
+            Main.util.sendMessage(player, MessagePath.WrongCommand.getPath()
+                    .replace("#command#", getSyntax()));
             return false;
         }
 
         if(!player.hasPermission("lightrepair.admin.command.get")) {
-            player.sendMessage("You don't have permission to use this command");
+            Main.util.sendMessage(player, MessagePath.NoPermission.getPath());
             return false;
         }
 
@@ -45,28 +47,30 @@ public class GetKitCommand extends SubCommand {
 
         if(target == null) {
             player.sendMessage("Player not found");
+            Main.util.sendMessage(player, MessagePath.PlayerNotFound.getPath());
             return false;
         }
 
         ItemStack is = Main.kitBuilder.getKitByName(kitName);
 
         if(is.getType().equals(Material.STONE)) {
-            player.sendMessage("Kit not found");
+            Main.util.sendMessage(player, MessagePath.KitNotFound.getPath());
             return false;
         }
 
         if(Main.util.isInventoryEmpty(player)) {
-            player.sendMessage("You got the kit " + kitName + " in your inventory size: " + is.getAmount());
+            Main.util.sendMessage(player, MessagePath.GetKitSuccess.getPath()
+                    .replace("#kit#", kitName));
             player.getInventory().addItem(is);
             return false;
         }
 
         if(player.getLocation().getWorld() == null) {
-            player.sendMessage("Players world not found for dropping kit");
-            return false;
+            throw new RuntimeException("Players world not found for dropping kit");
         }
 
         player.getLocation().getWorld().dropItemNaturally(player.getLocation(), is);
+        Main.util.sendMessage(player, MessagePath.GetKitInvFull.getPath());
 
         return false;
     }

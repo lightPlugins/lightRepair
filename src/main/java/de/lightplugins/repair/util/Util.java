@@ -26,6 +26,11 @@ public class Util {
         String prefix = MessagePath.Prefix.getPath();
         player.sendMessage(Main.colorTranslation.hexTranslation(prefix + message));
     }
+
+    public void playSoundOnRepair(Player player) {
+        player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 0.7f, 1.6f);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.7f, 1.8f);
+    }
     /*  Send a message List to player without Prefix  */
 
     public void sendMessageList(Player player, List<String> list) {

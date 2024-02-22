@@ -25,9 +25,11 @@ public class FileManager {
     private FileConfiguration dataConfig = null;
     private File configFile = null;
     private final String configName;
+    private final boolean loadDefaultsOneReload;
 
-    public FileManager(Main plugin, String configName) {
+    public FileManager(Main plugin, String configName, boolean loadDefaultsOneReload) {
         this.plugin = plugin;
+        this.loadDefaultsOneReload = loadDefaultsOneReload;
         this.configName = configName;
         saveDefaultConfig(configName);
 
@@ -75,29 +77,32 @@ public class FileManager {
             this.plugin.saveResource(configName, false);
         } else {
             // Merge the default config into the existing config
-            FileConfiguration defaultConfig = YamlConfiguration.loadConfiguration(
-                    new InputStreamReader(Objects.requireNonNull(this.plugin.getResource(configName))));
-            FileConfiguration existingConfig = getConfig();
-            for (String key : defaultConfig.getKeys(true)) {
-                if (!existingConfig.getKeys(true).contains(key)) {
-                    Bukkit.getConsoleSender().sendMessage(Main.consolePrefix +
-                            "Found §cnon existing config key§r. Adding §c" + key + " §rinto §c" + configName);
-                    existingConfig.set(key, defaultConfig.get(key));
 
+            if(loadDefaultsOneReload) {
+                FileConfiguration defaultConfig = YamlConfiguration.loadConfiguration(
+                        new InputStreamReader(Objects.requireNonNull(this.plugin.getResource(configName))));
+                FileConfiguration existingConfig = getConfig();
+                for (String key : defaultConfig.getKeys(true)) {
+                    if (!existingConfig.getKeys(true).contains(key)) {
+                        Bukkit.getConsoleSender().sendMessage(Main.consolePrefix +
+                                "Found §cnon existing config key§r. Adding §c" + key + " §rinto §c" + configName);
+                        existingConfig.set(key, defaultConfig.get(key));
+
+                    }
                 }
+
+                try {
+
+                    existingConfig.save(configFile);
+                    Bukkit.getConsoleSender().sendMessage(Main.consolePrefix +
+                            "Your config §c" + configName + " §ris up to date.");
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                saveConfig();
             }
-
-            try {
-
-                existingConfig.save(configFile);
-                Bukkit.getConsoleSender().sendMessage(Main.consolePrefix +
-                        "Your config §c" + configName + " §ris up to date.");
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            saveConfig();
         }
     }
 }
