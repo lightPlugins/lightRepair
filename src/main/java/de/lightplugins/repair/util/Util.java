@@ -31,6 +31,16 @@ public class Util {
         player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 0.7f, 1.6f);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.7f, 1.8f);
     }
+
+    public void playSoundOnFail(Player player) {
+        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BELL, (float)0.9,(float)0.3);
+        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BASS, (float)0.9,(float)0.5);
+    }
+
+    public void playSoundOnSuccess(Player player) {
+        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BELL, (float)1.0,(float)1.2);
+        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BASS, (float)1.0,(float)1.2);
+    }
     /*  Send a message List to player without Prefix  */
 
     public void sendMessageList(Player player, List<String> list) {

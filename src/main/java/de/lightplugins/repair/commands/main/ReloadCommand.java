@@ -24,14 +24,19 @@ public class ReloadCommand extends SubCommand {
     @Override
     public boolean perform(Player player, String[] args) {
 
-        if(player.hasPermission("lightrepair.admin.command.reload")) {
-            Main.kits.reloadConfig("kits.yml");
-            Main.kits.reloadConfig("settings.yml");
-            Main.kits.reloadConfig("messages.yml");
-            Main.kitBuilder.reloadKits();
-            Main.util.sendMessage(player, MessagePath.Reload.getPath());
-            return true;
+        if(!player.hasPermission("lightrepair.admin.command.reload")) {
+            Main.util.sendMessage(player, MessagePath.NoPermission.getPath());
+            Main.util.playSoundOnFail(player);
+            return false;
         }
-        return false;
+
+        Main.kits.reloadConfig("kits.yml");
+        Main.kits.reloadConfig("settings.yml");
+        Main.kits.reloadConfig("messages.yml");
+        Main.kitBuilder.reloadKits();
+        Main.util.sendMessage(player, MessagePath.Reload.getPath());
+        Main.util.playSoundOnSuccess(player);
+        return true;
+
     }
 }

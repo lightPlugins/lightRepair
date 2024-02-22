@@ -104,6 +104,7 @@ public class CheckOnRepair implements Listener {
 
                                         if(sword.getDurability() == 0) {
                                             Main.util.sendMessage(player, MessagePath.AlreadyFullRepaired.getPath());
+                                            Main.util.playSoundOnFail(player);
                                             event.setCancelled(true);
                                             return;
                                         }

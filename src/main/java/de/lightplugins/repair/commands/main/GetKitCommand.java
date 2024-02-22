@@ -32,11 +32,13 @@ public class GetKitCommand extends SubCommand {
         if(args.length != 3) {
             Main.util.sendMessage(player, MessagePath.WrongCommand.getPath()
                     .replace("#command#", getSyntax()));
+            Main.util.playSoundOnFail(player);
             return false;
         }
 
         if(!player.hasPermission("lightrepair.admin.command.get")) {
             Main.util.sendMessage(player, MessagePath.NoPermission.getPath());
+            Main.util.playSoundOnFail(player);
             return false;
         }
 
@@ -46,8 +48,8 @@ public class GetKitCommand extends SubCommand {
         Player target = Bukkit.getPlayer(playerName);
 
         if(target == null) {
-            player.sendMessage("Player not found");
             Main.util.sendMessage(player, MessagePath.PlayerNotFound.getPath());
+            Main.util.playSoundOnFail(player);
             return false;
         }
 
@@ -55,6 +57,7 @@ public class GetKitCommand extends SubCommand {
 
         if(is.getType().equals(Material.STONE)) {
             Main.util.sendMessage(player, MessagePath.KitNotFound.getPath());
+            Main.util.playSoundOnFail(player);
             return false;
         }
 
@@ -62,6 +65,7 @@ public class GetKitCommand extends SubCommand {
             Main.util.sendMessage(player, MessagePath.GetKitSuccess.getPath()
                     .replace("#kit#", kitName));
             player.getInventory().addItem(is);
+            Main.util.playSoundOnSuccess(player);
             return false;
         }
 
@@ -71,6 +75,7 @@ public class GetKitCommand extends SubCommand {
 
         player.getLocation().getWorld().dropItemNaturally(player.getLocation(), is);
         Main.util.sendMessage(player, MessagePath.GetKitInvFull.getPath());
+        Main.util.playSoundOnSuccess(player);
 
         return false;
     }
