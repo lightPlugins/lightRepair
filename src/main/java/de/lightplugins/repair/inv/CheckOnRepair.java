@@ -100,7 +100,7 @@ public class CheckOnRepair implements Listener {
                                         return;
                                     }
 
-                                    if(swordMeta instanceof Damageable) {
+                                    if(swordMeta instanceof Damageable damageable) {
 
                                         if(sword.getDurability() == 0) {
                                             Main.util.sendMessage(player, MessagePath.AlreadyFullRepaired.getPath());
