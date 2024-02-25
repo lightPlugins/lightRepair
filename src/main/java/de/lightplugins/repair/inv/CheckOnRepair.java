@@ -3,14 +3,13 @@ package de.lightplugins.repair.inv;
 import de.lightplugins.repair.enums.MessagePath;
 import de.lightplugins.repair.enums.PersistentDataPaths;
 import de.lightplugins.repair.master.Main;
-import org.bukkit.Bukkit;
+import dev.lone.itemsadder.api.CustomStack;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -40,6 +39,20 @@ public class CheckOnRepair implements Listener {
                 }
 
                 ItemStack sword = event.getCurrentItem().clone();
+
+                /*
+                CustomStack customItem = CustomStack.byItemStack(sword);
+
+                if(customItem == null) {
+                    Bukkit.getLogger().log(Level.SEVERE, "NO itemsadder item");
+                    return;
+                } else {
+                    sword = customItem.getItemStack();
+                    Bukkit.getLogger().log(Level.WARNING, "IS itemsadder item");
+                }
+                 */
+
+
                 for(String kitNames : Main.kitBuilder.kitNames) {
 
                     ItemStack is = Main.kitBuilder.getKitByName(kitNames).clone();
@@ -101,21 +114,55 @@ public class CheckOnRepair implements Listener {
                                         return;
                                     }
 
+                                    boolean isItemsAdderItemStack = false;
+
+                                    CustomStack customStack = CustomStack.byItemStack(sword);
+
+                                    if(customStack != null) {
+                                        isItemsAdderItemStack = true;
+                                    }
+
                                     if(swordMeta instanceof Damageable damageable) {
 
-                                        if(sword.getDurability() == 0) {
-                                            Main.util.sendMessage(player, MessagePath.AlreadyFullRepaired.getPath());
-                                            Main.util.playSoundOnFail(player);
-                                            event.setCancelled(true);
-                                            return;
-                                        }
-                                        int newDurability = sword.getDurability() - durability;
-                                        if (newDurability >= 0) {
-                                            sword.setDurability((short) newDurability);
+                                        if(isItemsAdderItemStack) {
 
+                                            if(damageable.getDamage() == 0) {
+                                                Main.util.sendMessage(player, MessagePath.AlreadyFullRepaired.getPath());
+                                                Main.util.playSoundOnFail(player);
+                                                event.setCancelled(true);
+                                                return;
+                                            }
+
+                                            int newIADurability = customStack.getDurability() + durability;
+
+                                            if (newIADurability < customStack.getMaxDurability()) {
+                                                customStack.setDurability(newIADurability);
+                                                sword = customStack.getItemStack();
+                                            } else {
+                                                customStack.setDurability(customStack.getMaxDurability());
+                                                sword = customStack.getItemStack();
+                                            }
+
+                                            event.setCurrentItem(sword);
                                         } else {
-                                            sword.setDurability((short) 0);
+
+                                            if(damageable.getDamage() == 0) {
+                                                Main.util.sendMessage(player, MessagePath.AlreadyFullRepaired.getPath());
+                                                Main.util.playSoundOnFail(player);
+                                                event.setCancelled(true);
+                                                return;
+                                            }
+                                            int newDurability = damageable.getDamage() - durability;
+                                            if (newDurability >= 0) {
+                                                damageable.setDamage(newDurability);
+                                                sword.setItemMeta(damageable);
+
+                                            } else {
+                                                damageable.setDamage(0);
+                                                sword.setItemMeta(damageable);
+                                            }
                                         }
+
 
                                         Main.util.sendMessage(player, MessagePath.OnSuccessRepair.getPath()
                                                 .replace("#kit#", Main.kitBuilder.getDisplayName(kitNames)));
