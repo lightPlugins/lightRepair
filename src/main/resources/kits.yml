@@ -1,9 +1,95 @@
 repairKits:
-  'repair_kit_1':
-    addDurability: 100
-    material: 'vanilla:DIAMOND'
+  #
+  # Repair kits for ashura Rod
+  #
+  'fish_repair_kit_1':
+    addDurability: 64
+    material: 'itemsadder:rpg_bundle_v13_item9'
     glow: true
-    displayName: "Repair Kit I"
+    displayName: "&#8f1ec2Angel Reparatur Kit"
     lore:
-      - 'Repair any tool'
-      - 'Durability: #durability#'
+      - ' '
+      - '&7Durability: &#8f1ec2#durability#'
+      - '&7Rarity: &#8f1ec2EPISCH'
+      - ' '
+      - ' &#ffdc73[!] &#ddeceeZiehe dieses &#8f1ec2Reparatur Kit'
+      - '     &#ddeceeauf ein Item aus deinem Inventar.'
+      - ' '
+      - ' &#ffdc73[!] &#ddeceeMit diesem &#8f1ec2Reparatur Kit'
+      - '     &#ddeceekannst du deine &#8f1ec2Angel &#ddeceereparieren.'
+  #
+  # Repair kits for ashura tools
+  #
+  'tool_repair_kit_1':
+    addDurability: 2034
+    material: 'itemsadder:rpg_bundle_v13_item10'
+    glow: true
+    displayName: "&#8f1ec2Tool Reparatur Kit"
+    lore:
+      - ' '
+      - '&7Durability: &#8f1ec2#durability#'
+      - '&7Rarity: &#8f1ec2EPISCH'
+      - ' '
+      - ' &#ffdc73[!] &#ddeceeZiehe dieses &#8f1ec2Reparatur Kit'
+      - '     &#ddeceeauf ein Item aus deinem Inventar.'
+      - ' '
+      - ' &#ffdc73[!] &#ddeceeMit diesem &#8f1ec2Reparatur Kit'
+      - '     &#ddeceekannst du deine &#8f1ec2Tools &#ddeceereparieren.'
+    conditions:
+      - 'ecoitems:pickaxe_ashura'
+      - 'ecoitems:shovel_ashura'
+      - 'ecoitems:axe_ashura'
+      - 'ecoitems:sword_ashura'
+      - 'ecoitems:hammer_ashura'
+  #
+  # Repair kits for ashura armor
+  #
+  'armor_repair_kit_1':
+    addDurability: 80
+    material: 'itemsadder:rpg_bundle_v13_item11'
+    glow: true
+    displayName: "&#8f1ec2Rüstung Reparatur Kit"
+    lore:
+      - ' '
+      - '&7Durability: &#8f1ec2#durability#'
+      - '&7Rarity: &#8f1ec2EPISCH'
+      - ' '
+      - ' &#ffdc73[!] &#ddeceeZiehe dieses &#8f1ec2Reparatur Kit'
+      - '     &#ddeceeauf ein Item aus deinem Inventar.'
+      - ' '
+      - ' &#ffdc73[!] &#ddeceeMit diesem &#8f1ec2Reparatur Kit'
+      - '     &#ddeceekannst du deine &#8f1ec2Rüstung &#ddeceereparieren.'
+    conditions:
+      - 'ecoarmor:set_nature_helmet'
+      - 'ecoarmor:set_nature_boots'
+      - 'ecoarmor:set_nature_chestplate'
+      - 'ecoarmor:set_nature_leggings'
+  #
+  # Repair kits for ashura elytra
+  #
+  'elytra_repair_kit_1':
+    addDurability: 432
+    material: 'itemsadder:rpg_bundle_v13_item12'
+    glow: true
+    displayName: "&#8f1ec2Elytra Reparatur Kit"
+    lore:
+      - ' '
+      - '&7Durability: &#8f1ec2#durability#'
+      - '&7Rarity: &#8f1ec2EPISCH'
+      - ' '
+      - ' &#ffdc73[!] &#ddeceeZiehe dieses &#8f1ec2Reparatur Kit'
+      - '     &#ddeceeauf ein Item aus deinem Inventar.'
+      - ' '
+      - ' &#ffdc73[!] &#ddeceeMit diesem &#8f1ec2Reparatur Kit'
+      - '     &#ddeceekannst du deine &#8f1ec2Elytra &#ddeceereparieren.'
+    conditions:
+      - 'ecoarmor:set_nature_elytra'
+
+Content:
+  622f1822-b41c-49a8-b141-5ee947e62671:
+    Priority: 0
+    Item:
+      Material: BLACK_STAINED_GLASS_PANE
+      Name: ' '
+    Slots: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26
+    Type: NONE

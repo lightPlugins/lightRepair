@@ -15,6 +15,7 @@ public enum MessagePath {
     OnSuccessRepair("onSuccessRepair"),
     AlreadyFullRepaired("alreadyFullRepaired"),
     Reload("reload"),
+    NotMeetCondition("notMeetCondition"),
     ;
 
     private final String path;

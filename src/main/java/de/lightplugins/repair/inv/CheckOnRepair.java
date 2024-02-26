@@ -1,12 +1,23 @@
 package de.lightplugins.repair.inv;
 
+import com.willfp.eco.core.items.CustomItem;
+import com.willfp.eco.core.items.Items;
+import com.willfp.eco.core.items.TestableItem;
+import com.willfp.ecoarmor.sets.ArmorSet;
+import com.willfp.ecoarmor.sets.ArmorUtils;
+import com.willfp.ecoitems.items.EcoItem;
+import com.willfp.ecoitems.items.EcoItemFinder;
+import com.willfp.ecoitems.items.EcoItems;
+import com.willfp.ecoitems.items.ItemUtilsKt;
 import de.lightplugins.repair.enums.MessagePath;
 import de.lightplugins.repair.enums.PersistentDataPaths;
 import de.lightplugins.repair.master.Main;
 import dev.lone.itemsadder.api.CustomStack;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -83,8 +94,6 @@ public class CheckOnRepair implements Listener {
                                 durability = durabilityValue;
                             }
 
-                            Player player = (Player) event.getWhoClicked();
-
                             List<ItemStack> items = Arrays.stream(Material.values())
                                     .map(ItemStack::new)
                                     .toList();
@@ -110,6 +119,16 @@ public class CheckOnRepair implements Listener {
                                 ItemMeta swordMeta = sword.getItemMeta();
 
                                 if(sword.getType().equals(singleItemFromList.getType())) {
+
+                                    Player player = (Player) event.getWhoClicked();
+
+                                    if(!checkIsCondition(sword, kitNames)) {
+                                        Main.util.sendMessage(player, MessagePath.NotMeetCondition.getPath());
+                                        Main.util.playSoundOnFail(player);
+                                        event.setCancelled(true);
+                                        return;
+                                    }
+
                                     if(swordMeta == null) {
                                         return;
                                     }
@@ -185,5 +204,42 @@ public class CheckOnRepair implements Listener {
                 }
             }
         }
+    }
+
+    private boolean checkIsCondition(ItemStack itemStack, String kitName) {
+
+        FileConfiguration kits = Main.kits.getConfig();
+
+        boolean meetCondition = false;
+
+        for(String singleCondition : kits.getStringList("repairKits." + kitName + ".conditions")) {
+
+            String[] condition = singleCondition.split(":");
+
+            switch (condition[0]) {
+                case "vanilla" -> {
+                    if(itemStack.getType().toString().equals(condition[1].toUpperCase())) {
+                        meetCondition = true;
+                    }
+                }
+                case "ecoitems", "ecoarmor" -> {
+                    ItemStack is = Items.lookup(condition[0] + ":" + condition[1]).getItem();
+                    if(is != null && is.getItemMeta() != null && itemStack.getItemMeta() != null) {
+
+                        CustomItem customItem = Items.getCustomItem(itemStack);
+
+                        if(customItem == null) {
+                            return false;
+                        }
+
+                        if(customItem.test(is)) {
+                            meetCondition = true;
+                        }
+                    }
+                }
+            }
+        }
+        return meetCondition;
+
     }
 }

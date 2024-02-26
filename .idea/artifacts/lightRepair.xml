@@ -3,6 +3,8 @@
     <output-path>$USER_HOME$/Desktop/minecraft-server/plugins</output-path>
     <root id="archive" name="lightRepair.jar">
       <element id="module-output" name="lightRepair" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/willfp/libreforge/libreforge-gradle-plugin/4.56.2/libreforge-gradle-plugin-4.56.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/willfp/libreforge/gradle-plugin/4.56.2/gradle-plugin-4.56.2.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
