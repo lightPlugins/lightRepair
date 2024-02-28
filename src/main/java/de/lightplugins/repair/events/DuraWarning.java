@@ -1,8 +1,6 @@
 package de.lightplugins.repair.events;
 
-import de.lightplugins.repair.enums.MessagePath;
 import de.lightplugins.repair.master.Main;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -14,7 +12,6 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Objects;
-import java.util.logging.Level;
 
 public class DuraWarning implements Listener {
 
@@ -49,21 +46,22 @@ public class DuraWarning implements Listener {
             int maxDura = itemStack.getType().getMaxDurability();
             // 0 = fully repaired
             int currentDura = damageable.getDamage();
+            int remainingDura = (maxDura - currentDura);
 
-            int remainingDura = maxDura - currentDura;
-
-            if(remainingDura < startUnder && remainingDura > 0) {
+            if(remainingDura < startUnder && remainingDura > 1) {
 
                 player.sendTitle(
                         title[0],
-                        title[1].replace("#amount#", String.valueOf(remainingDura)),
-                        10, 45, 25);
-                player.playSound(
-                        player.getLocation(),
-                        Sound.valueOf(sound[0].toUpperCase()),
-                        Float.parseFloat(sound[1]),
-                        Float.parseFloat(sound[2]));
+                        title[1].replace("#amount#", String.valueOf((remainingDura - 1))),
+                        0, 45, 25);
 
+                if(sound.length != 0) {
+                    player.playSound(
+                            player.getLocation(),
+                            Sound.valueOf(sound[0].toUpperCase()),
+                            Float.parseFloat(sound[1]),
+                            Float.parseFloat(sound[2]));
+                }
             }
         }
     }
