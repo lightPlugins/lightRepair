@@ -1,1 +1,6 @@
 settings:
+  durabilityWarning:
+    enable: true
+    startUnder: 16
+    title: '&4DURABILITY WARNING;&fDein Item hat noch &c#amount# &fHaltbarkeit'
+    sound: 'BLOCK_ANVIL_PLACE;1.0;0.4'

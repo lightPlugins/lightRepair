@@ -2,6 +2,7 @@ package de.lightplugins.repair.master;
 
 import de.lightplugins.repair.commands.manager.MainCommandManager;
 import de.lightplugins.repair.commands.tabs.MainTabCompleter;
+import de.lightplugins.repair.events.DuraWarning;
 import de.lightplugins.repair.events.ItemsAdderOnLoad;
 import de.lightplugins.repair.inv.CheckItemStack;
 import de.lightplugins.repair.inv.CheckOnRepair;
@@ -41,13 +42,17 @@ public class Main extends JavaPlugin {
         messages = new FileManager(this, "messages.yml", true);
         kits = new FileManager(this, "kits.yml", false);
 
+        util = new Util();
+        colorTranslation = new ColorTranslation();
+
+        kitBuilder = new KitBuilder();
+
         if (Bukkit.getPluginManager().getPlugin("ItemsAdder") == null) {
             Bukkit.getConsoleSender().sendMessage("\n\n    §4ERROR\n\n" +
                     "    §cCould not find §4Itemsadder\n" +
                     "    §rDownload the latest version if ItemsAdder\n" +
                     "    §chttps://builtbybit.com/resources/itemsadder.10839/\n\n\n");
             isItemsAdder = false;
-            return;
         } else {
             isItemsAdder = true;
         }
@@ -56,18 +61,13 @@ public class Main extends JavaPlugin {
 
         pm.registerEvents(new CheckOnRepair(), this);
         pm.registerEvents(new CheckItemStack(), this);
+        pm.registerEvents(new DuraWarning(), this);
 
         if(isItemsAdder) {
             pm.registerEvents(new ItemsAdderOnLoad(), this);
         } else {
             kitBuilder.reloadKits();
         }
-
-
-        util = new Util();
-        colorTranslation = new ColorTranslation();
-
-        kitBuilder = new KitBuilder();
 
         Objects.requireNonNull(this.getCommand("lrepair")).setExecutor(new MainCommandManager(this));
         Objects.requireNonNull(this.getCommand("lrepair")).setTabCompleter(new MainTabCompleter());
