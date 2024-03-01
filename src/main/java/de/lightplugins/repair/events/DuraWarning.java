@@ -1,6 +1,7 @@
 package de.lightplugins.repair.events;
 
 import de.lightplugins.repair.master.Main;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -11,6 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class DuraWarning implements Listener {
@@ -41,26 +44,48 @@ public class DuraWarning implements Listener {
             return;
         }
 
-        if(itemMeta instanceof Damageable damageable) {
+        List<ItemStack> items = Arrays.stream(Material.values())
+                .map(ItemStack::new)
+                .toList();
+        List<ItemStack> filteredItems = items.stream()
+                .filter(item -> {
+                    Material material = item.getType();
+                    return material.toString().endsWith("_SWORD") ||
+                            material.toString().endsWith("_AXE") ||
+                            material.toString().endsWith("_SHOVEL") ||
+                            material.toString().endsWith("_HOE") ||
+                            material.toString().endsWith("_PICKAXE") ||
+                            material.toString().equals("FISHING_ROD") ||
+                            material.toString().equals("SHIELD");
+                })
+                .toList();
 
-            int maxDura = itemStack.getType().getMaxDurability();
-            // 0 = fully repaired
-            int currentDura = damageable.getDamage();
-            int remainingDura = (maxDura - currentDura);
+        for(ItemStack singleItemFromList : filteredItems) {
 
-            if(remainingDura < startUnder && remainingDura > 1) {
+            if(itemStack.getType().equals(singleItemFromList.getType())) {
 
-                player.sendTitle(
-                        title[0],
-                        title[1].replace("#amount#", String.valueOf((remainingDura - 1))),
-                        0, 45, 25);
+                if(itemMeta instanceof Damageable damageable) {
 
-                if(sound.length != 0) {
-                    player.playSound(
-                            player.getLocation(),
-                            Sound.valueOf(sound[0].toUpperCase()),
-                            Float.parseFloat(sound[1]),
-                            Float.parseFloat(sound[2]));
+                    int maxDura = itemStack.getType().getMaxDurability();
+                    // 0 = fully repaired
+                    int currentDura = damageable.getDamage();
+                    int remainingDura = (maxDura - currentDura);
+
+                    if(remainingDura < startUnder && remainingDura > 1) {
+
+                        player.sendTitle(
+                                title[0],
+                                title[1].replace("#amount#", String.valueOf((remainingDura - 1))),
+                                0, 45, 25);
+
+                        if(sound.length != 0) {
+                            player.playSound(
+                                    player.getLocation(),
+                                    Sound.valueOf(sound[0].toUpperCase()),
+                                    Float.parseFloat(sound[1]),
+                                    Float.parseFloat(sound[2]));
+                        }
+                    }
                 }
             }
         }
